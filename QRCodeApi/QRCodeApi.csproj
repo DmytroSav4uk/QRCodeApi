@@ -7,9 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
         <PackageReference Include="QRCoder" Version="1.6.0" />
         <PackageReference Include="SkiaSharp" Version="3.119.0-preview.1.2" />
+        <PackageReference Include="System.Drawing.Common" Version="10.0.0-preview.3.25173.2" />
+        <PackageReference Include="ZXing.Net" Version="0.16.10" />
+        <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.13" />
     </ItemGroup>
 
 </Project>

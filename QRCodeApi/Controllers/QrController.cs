@@ -1,24 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Drawing;
+using Microsoft.AspNetCore.Mvc;
 using QRCoder;
+
+using ZXing.Windows.Compatibility;
 
 
 namespace QRCodeApi.Controllers
 {
     [ApiController]
-    [Route("api/generateCode")]
+    [Route("api")]
     public class QrController : ControllerBase
     {
         public class QrRequest
         {
             public string Url { get; set; }
         }
-        
+
         public class QrResponse
         {
             public string Base64Png { get; set; }
         }
 
-        [HttpPost]
+        public class QrReadResponse
+        {
+            public string Text { get; set; }
+        }
+
+        [HttpPost("generateCode")]
         public IActionResult GenerateQrCode([FromBody] QrRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Url))
@@ -33,5 +41,25 @@ namespace QRCodeApi.Controllers
 
             return Ok(new QrResponse { Base64Png = base64 });
         }
+        
+        [HttpPost("readCode")]
+        public IActionResult ReadQrCode([FromForm] IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+                return BadRequest("Image is required.");
+
+            using var stream = image.OpenReadStream();
+            using var bitmap = new Bitmap(stream);
+
+            var reader = new BarcodeReader(); 
+            var result = reader.Decode(bitmap);
+
+            if (result == null)
+                return NotFound("QR code could not be read.");
+
+            return Ok(new QrReadResponse { Text = result.Text });
+        }
+
+        
     }
 }
