@@ -1,9 +1,16 @@
 ﻿using System.Drawing;
+using System.Drawing.Imaging;
 using Microsoft.AspNetCore.Mvc;
-using QRCoder;
-using ZXing.QrCode.Internal;
+using OpenCvSharp;
 using ZXing.Windows.Compatibility;
 using QRCodeApi.Services;
+using ZXing;
+using ZXing.Common;
+using Size = System.Drawing.Size;
+
+using OpenCvSharp.Extensions;
+
+
 
 
 namespace QRCodeApi.Controllers
@@ -12,6 +19,8 @@ namespace QRCodeApi.Controllers
     [Route("api")]
     public class QrController : ControllerBase
     {
+        
+       
         public class QrRequest
         {
             public string Url { get; set; }
@@ -24,6 +33,7 @@ namespace QRCodeApi.Controllers
             public bool TransparentBackground { get; set; } = false;
         }
         
+     
         public class QrResponse
         {
             public string Base64Png { get; set; }
@@ -58,6 +68,7 @@ namespace QRCodeApi.Controllers
             return Ok(new QrResponse { Base64Png = base64 });
         }
         
+        // adapter
         
         [HttpPost("readCode")]
         public IActionResult ReadQrCode([FromForm] IFormFile image)
@@ -68,13 +79,41 @@ namespace QRCodeApi.Controllers
             using var stream = image.OpenReadStream();
             using var bitmap = new Bitmap(stream);
 
-            var reader = new BarcodeReader(); 
+          
+            var reader = new BarcodeReader
+            {
+                AutoRotate = true,
+                Options = new DecodingOptions
+                {
+                    TryInverted = true,
+                    PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE }
+                }
+            };
+
             var result = reader.Decode(bitmap);
+
+           
+            if (result == null)
+            {
+                var processedBitmap = ApplyMorphologicalAdapter(bitmap);
+                result = reader.Decode(processedBitmap);
+            }
 
             if (result == null)
                 return NotFound("QR code could not be read.");
 
             return Ok(new QrReadResponse { Text = result.Text });
         }
+
+        private Bitmap ApplyMorphologicalAdapter(Bitmap original)
+        {
+            Mat mat = BitmapConverter.ToMat(original);
+            Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2GRAY);
+            Cv2.Threshold(mat, mat, 128, 355, ThresholdTypes.Binary);
+            var kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(3, 3));
+            Cv2.Dilate(mat, mat, kernel);
+            return BitmapConverter.ToBitmap(mat);
+        }
+
     }
 }
