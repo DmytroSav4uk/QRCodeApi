@@ -7,11 +7,7 @@ using QRCodeApi.Services;
 using ZXing;
 using ZXing.Common;
 using Size = System.Drawing.Size;
-
 using OpenCvSharp.Extensions;
-
-
-
 
 namespace QRCodeApi.Controllers
 {
