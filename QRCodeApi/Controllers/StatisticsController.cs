@@ -30,7 +30,7 @@ namespace QRCodeApi.Controllers
             {
                 BackgroundColor = statisticsDto.BackgroundColor,
                 Bubble = statisticsDto.Bubble,
-                Timestamp = statisticsDto.Timestamp
+                Timestamp = DateTime.UtcNow  
             };
 
             _statistics.Add(record);
@@ -40,5 +40,6 @@ namespace QRCodeApi.Controllers
 
             return Ok(new { message = "Statistics saved and Excel files generated." });
         }
+
     }
 }
