@@ -6,6 +6,12 @@
 This is the back-end part of the application for generating and reading QR codes, with additional features such as customizing appearance and uploading a logo.
 
 
+## 📦 Download Build
+
+The desktop version of the built application can be downloaded at:
+
+🔗 **[Download Ready-to-Use App](https://drive.google.com/file/d/1IqJQCkU2xuzFCtgYhpZUQDD9ArS5xWHz/view)**
+
 *Requirements: .NET 9*
 
 ---
