@@ -101,3 +101,11 @@ Steps:
 git clone 
 dotnet restore
 dotnet run
+````
+
+
+
+# Code amount
+
+![img.png](/Capture1.PNG)
+
