@@ -1,5 +1,5 @@
 ﻿# Savchuk Dmytro IPZk-24-1
-# Front-end Part
+# Back-end Part
 
 # QR Code Generator & Reader
 
